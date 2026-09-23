@@ -60,11 +60,12 @@ def install() -> None:
     global _installed  # noqa: PLW0603
     if _installed:
         return
-    _installed = True
     try:
         _install_wrappers()
-    except Exception:  # noqa: BLE001 - an SDK layout change degrades to the stock behavior
+    except Exception:  # noqa: BLE001 - a transient failure retries on the next install() call
         logger.warning("could not wrap the SDK chat-completions content handling", exc_info=True)
+        return
+    _installed = True
 
 
 def _install_wrappers() -> None:
